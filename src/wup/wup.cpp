@@ -6,7 +6,10 @@
 #include <avr/wdt.h>
 #include <avr/io.h>
 #include <avr/power.h>
-#include <LUFA/Drivers/USB/USB.h>
+
+extern "C" {
+    #include <LUFA/Drivers/USB/USB.h>
+}
 
 struct device_config {
     const USB_Descriptor_Device_t *device_descriptor;

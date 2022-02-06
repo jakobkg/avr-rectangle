@@ -1,9 +1,10 @@
-cmake_minimum_required( VERSION 3.13.4 )
+cmake_minimum_required( VERSION 3.14.0 )
 project(
     avr-rectangle
     LANGUAGES C CXX
 )
 
+# Set AVR compilers
 set(CMAKE_C_COMPILER /usr/bin/avr-gcc)
 set(CMAKE_CXX_COMPILER /usr/bin/avr-g++)
 
@@ -62,7 +63,6 @@ set(CMAKE_CXX_FLAGS
 )
 
 include_directories(/usr/avr/include)
-include_directories(${PROJECT_SOURCE_DIR}/include/)
 include_directories(${PROJECT_SOURCE_DIR}/lufa/)
 
 set(SOURCES
