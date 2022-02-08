@@ -21,6 +21,7 @@ set(DEFINES
     -DF_CPU=${MICROCHIP_AVR_F_CPU} \
     -DF_USB=16000000 \
     -DUSE_STATIC_OPTIONS \
+    -DUSE_FLASH_DESCRIPTORS\
     "
 )
 
@@ -78,7 +79,6 @@ set(LUFA_USB_SOURCES
     ${LUFA_ROOT_PATH}/Drivers/USB/Core/ConfigDescriptors.c
     ${LUFA_ROOT_PATH}/Drivers/USB/Core/Events.c
     ${LUFA_ROOT_PATH}/Drivers/USB/Core/USBTask.c
-    ${LUFA_ROOT_PATH}/CodeTemplates/DeviceTemplate/Descriptors.c
 )
 
 set(SOURCES

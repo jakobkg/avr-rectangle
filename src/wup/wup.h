@@ -30,5 +30,13 @@ namespace Protocol {
 }
 
 void setupUSB(void);
+extern "C" {
+    #ifndef _USB__CALLBACK_GETDESCRIPTOR_
+    #define _USB__CALLBACK_GETDESCRIPTOR_
 
+    uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
+                                        const uint16_t wIndex,
+                                        const void** DescriptorAddress);
+    #endif
+}
 #endif
