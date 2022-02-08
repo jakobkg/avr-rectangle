@@ -5,18 +5,21 @@ project(
 )
 
 # Set AVR compilers
-set(CMAKE_C_COMPILER /usr/bin/avr-gcc)
-set(CMAKE_CXX_COMPILER /usr/bin/avr-g++)
+set(CMAKE_C_COMPILER    /usr/bin/avr-gcc)
+set(CMAKE_CXX_COMPILER  /usr/bin/avr-g++)
 
 # Microchip AVR configuration
 set(MICROCHIP_AVR_MCU   "atmega32u4")
+set(AVR_ARCH            "AVR8")
 set(MICROCHIP_AVR_F_CPU "16000000UL")
+
+set(LUFA_ROOT_PATH "lufa/LUFA")
 
 # configure compilation and linking
 set(DEFINES
     "-mmcu=${MICROCHIP_AVR_MCU} \
     -DF_CPU=${MICROCHIP_AVR_F_CPU} \
-    -DF_USB=8000000 \
+    -DF_USB=16000000 \
     -DUSE_STATIC_OPTIONS \
     "
 )
@@ -39,7 +42,7 @@ set(CMAKE_C_FLAGS
     ${DEFINES} \
     "
 )
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} \
     -O3 \
@@ -65,9 +68,23 @@ set(CMAKE_CXX_FLAGS
 include_directories(/usr/avr/include)
 include_directories(${PROJECT_SOURCE_DIR}/lufa/)
 
+set(LUFA_USB_SOURCES
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/${AVR_ARCH}/Device_${AVR_ARCH}.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/${AVR_ARCH}/Endpoint_${AVR_ARCH}.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/${AVR_ARCH}/EndpointStream_${AVR_ARCH}.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/DeviceStandardReq.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/${AVR_ARCH}/USBController_${AVR_ARCH}.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/${AVR_ARCH}/USBInterrupt_${AVR_ARCH}.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/ConfigDescriptors.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/Events.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Core/USBTask.c
+    ${LUFA_ROOT_PATH}/CodeTemplates/DeviceTemplate/Descriptors.c
+)
+
 set(SOURCES
     src/main.cpp
     src/wup/wup.cpp
+    ${LUFA_USB_SOURCES}
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
