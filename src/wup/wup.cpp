@@ -11,12 +11,14 @@ extern "C" {
     #include <LUFA/Drivers/USB/USB.h>
 }
 
-struct device_config {
-    const USB_Descriptor_Device_t *device_descriptor;
-    const USB_Descriptor_Interface_t *interface_descriptor;
-    const USB_Descriptor_Configuration_Header_t *config_descriptor;
-    const USB_HID_StdDescriptor_HID_t *hid_descriptor;
-};
+
+typedef struct {
+	USB_Descriptor_Configuration_Header_t Config;
+	// Generic HID Interface
+	USB_Descriptor_Interface_t            HID_Interface;
+	USB_HID_Descriptor_HID_t              HID_VendorHID;
+	USB_Descriptor_Endpoint_t             HID_ReportINEndpoint;
+} USB_Descriptor_Configuration_t;
 
 const USB_Descriptor_Device_t device_descriptor = {
     .Header = {
@@ -68,14 +70,16 @@ const USB_Descriptor_Configuration_Header_t config_descriptor = {
     .MaxPowerConsumption = 0xFA
 };
 
-const USB_HID_StdDescriptor_HID_t hid_descriptor = {
-    .bLength = 9,
-    .bDescriptorType = 33,
-    .bcdHID = VERSION_BCD(1,0,0), //TODO find right value
-    .bCountryCode = 0,
-    .bNumDescriptors = 1,
-    .bDescriptorType2 = 34,
-    .wDescriptorLength = 214
+const USB_HID_Descriptor_HID_t hid_descriptor = {
+    .Header {
+        .Size = 9,
+        .Type = 33
+    },
+    .HIDSpec = VERSION_BCD(1,0,0), //TODO find right value
+    .CountryCode = 0,
+    .TotalReportDescriptors = 1,
+    .HIDReportType = 34,
+    .HIDReportLength = 214
 };
 
 const USB_Descriptor_Endpoint_t endpoint_in_descriptor = {
@@ -98,6 +102,13 @@ USB_Descriptor_Endpoint_t endpoint_out_descriptor = {
     .Attributes = 0, // TODO FIND VALUE
     .EndpointSize = 5,
     .PollingIntervalMS = 8
+};
+
+const USB_Descriptor_Configuration_t device_config {
+    .Config = config_descriptor,
+    .HID_Interface = interface_descriptor,
+    .HID_VendorHID = hid_descriptor,
+    .HID_ReportINEndpoint = endpoint_in_descriptor,
 };
 
 const USB_Descriptor_String_t PROGMEM LangString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
@@ -124,4 +135,47 @@ void setupUSB(void) {
     clock_prescale_set(clock_div_1);
 
     USB_Init();
+}
+
+extern "C" {
+    uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
+                                        const uint16_t wIndex,
+                                        const void** const DescriptorAddress) {
+        const uint8_t  DescriptorType   = (wValue >> 8);
+        const uint8_t  DescriptorNumber = (wValue & 0xFF);
+
+        const void* Address = NULL;
+        uint16_t    Size    = NO_DESCRIPTOR;
+
+        switch (DescriptorType) {
+            case DTYPE_Device:
+                Address = &device_descriptor;
+                Size    = sizeof(USB_Descriptor_Device_t);
+                break;
+            case DTYPE_Configuration:
+                Address = &device_config;
+                Size    = sizeof(USB_Descriptor_Configuration_t);
+                break;
+            case DTYPE_String:
+                switch (DescriptorNumber) {
+                    case 0x00:
+                        Address = &LangString;
+                        Size    = pgm_read_byte(&LangString.Header.Size);
+                        break;
+                    case 0x01:
+                        Address = &ManuString;
+                        Size    = pgm_read_byte(&ManuString.Header.Size);
+                        break;
+                    case 0x02:
+                        Address = &ProductString;
+                        Size    = pgm_read_byte(&ProductString.Header.Size);
+                        break;
+                }
+
+                break;
+        }
+
+        *DescriptorAddress = Address;
+        return Size;
+    }
 }
