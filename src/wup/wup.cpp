@@ -72,10 +72,10 @@ const USB_Descriptor_Configuration_Header_t config_descriptor = {
 
 const USB_HID_Descriptor_HID_t hid_descriptor = {
     .Header {
-        .Size = 9,
-        .Type = 33
+        .Size = sizeof(USB_HID_Descriptor_HID_t),
+        .Type = HID_DTYPE_HID
     },
-    .HIDSpec = VERSION_BCD(1,0,0), //TODO find right value
+    .HIDSpec = VERSION_BCD(1,1,0),
     .CountryCode = 0,
     .TotalReportDescriptors = 1,
     .HIDReportType = 34,
@@ -88,18 +88,18 @@ const USB_Descriptor_Endpoint_t endpoint_in_descriptor = {
         .Type = DTYPE_Endpoint
     },
     .EndpointAddress = 129,
-    .Attributes = 0, // TODO FIND VALUE
+    .Attributes = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
     .EndpointSize = 37,
     .PollingIntervalMS = 8
 };
 
-USB_Descriptor_Endpoint_t endpoint_out_descriptor = {
+const USB_Descriptor_Endpoint_t endpoint_out_descriptor = {
     .Header = {
         .Size = sizeof(USB_Descriptor_Endpoint_t),
         .Type = DTYPE_Endpoint
     },
     .EndpointAddress = 2,
-    .Attributes = 0, // TODO FIND VALUE
+    .Attributes = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
     .EndpointSize = 5,
     .PollingIntervalMS = 8
 };
@@ -145,7 +145,7 @@ extern "C" {
         const uint8_t  DescriptorNumber = (wValue & 0xFF);
 
         const void* Address = NULL;
-        uint16_t    Size    = NO_DESCRIPTOR;
+        uint16_t    Size    = 0;
 
         switch (DescriptorType) {
             case DTYPE_Device:
