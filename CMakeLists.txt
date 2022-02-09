@@ -79,11 +79,12 @@ set(LUFA_USB_SOURCES
     ${LUFA_ROOT_PATH}/Drivers/USB/Core/ConfigDescriptors.c
     ${LUFA_ROOT_PATH}/Drivers/USB/Core/Events.c
     ${LUFA_ROOT_PATH}/Drivers/USB/Core/USBTask.c
+    ${LUFA_ROOT_PATH}/Drivers/USB/Class/Device/HIDClassDevice.c
 )
 
 set(SOURCES
     src/main.cpp
-    src/wup/wup.cpp
+    src/wup/callbacks.cpp
     ${LUFA_USB_SOURCES}
 )
 
