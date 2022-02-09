@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include "descriptors.h"
+#include "adapter_report.h"
 
 extern "C" {
 	#include <LUFA/Drivers/USB/USB.h>
@@ -69,5 +70,6 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
                                           const void* ReportData,
                                           const uint16_t ReportSize)
 {
-    return;
+    ReportData = &defaultReport;
+	return;
 }
