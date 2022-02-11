@@ -59,8 +59,10 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
                                          uint8_t* const ReportID,
                                          const uint8_t ReportType,
                                          void* ReportData,
-                                         uint16_t* const ReportSize)
-{
+                                         uint16_t* ReportSize) {
+    adapterReport_t* adapterreport = (adapterReport_t*)ReportData;
+	memcpy(&adapterreport, &defaultReport, reportSize);
+	ReportSize = &reportSize;
 	return false;
 }
 
@@ -70,6 +72,5 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
                                           const void* ReportData,
                                           const uint16_t ReportSize)
 {
-    ReportData = &defaultReport;
 	return;
 }

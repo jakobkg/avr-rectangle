@@ -38,7 +38,9 @@ struct adapterReport_t {
     controllerReport_t controllerReports[4];
 };
 
-const adapterReport_t PROGMEM defaultReport = {
+uint16_t reportSize = sizeof(adapterReport_t);
+
+adapterReport_t defaultReport = {
     .thirtythree = 33,
     .controllerReports = {
         defaultControllerReport,

@@ -20,9 +20,19 @@ enum StringDescriptors_t {
 };
 
 // DESCRIPTORS
-const USB_Descriptor_HIDReport_Datatype_t PROGMEM GenericReport[] =
-{
-	HID_DESCRIPTOR_VENDOR(0x00, 0x01, 0x02, 0x03, 214)
+const uint8_t ReportDescriptorLength= 214;
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM ReportDescriptor[ReportDescriptorLength] = { // This is magic
+    5,   5,   9,   0,
+    161,   1, 133,  17,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   5, 145,   0, 192, 
+    161,   1, 133,  33,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,  37, 129,   0, 192, 
+    161,   1, 133,  18,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   1, 145,   0, 192, 
+    161,   1, 133,  34,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,  25, 129,   0, 192, 
+    161,   1, 133,  19,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   1, 145,   0, 192, 
+    161,   1, 133,  35,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   2, 129,   0, 192, 
+    161,   1, 133,  20,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   1, 145,   0, 192, 
+    161,   1, 133,  36,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   2, 129,   0, 192, 
+    161,   1, 133,  21,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   1, 145,   0, 192, 
+    161,   1, 133,  37,  25,  0,  42, 255,   0,  21,   0,  38, 255,   0, 117,   8, 149,   2, 129,   0, 192
 };
 
 const USB_Descriptor_Device_t PROGMEM DeviceDescriptor = {
@@ -57,7 +67,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .TotalInterfaces = 1,
         .ConfigurationNumber = 1,
         .ConfigurationStrIndex = NO_DESCRIPTOR,
-        .ConfigAttributes = (USB_CONFIG_ATTR_RESERVED | USB_CONFIG_ATTR_SELFPOWERED),
+        .ConfigAttributes = (USB_CONFIG_ATTR_RESERVED),
         .MaxPowerConsumption = USB_CONFIG_POWER_MA(500)
     },
 

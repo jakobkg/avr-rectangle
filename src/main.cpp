@@ -12,18 +12,13 @@ extern "C" {
 #include "wup/descriptors.h"
 #include "wup/callbacks.h"
 
-/** Buffer to hold the previously generated HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevHIDReportBuffer[214];
 
-/** LUFA HID Class driver interface configuration and state information. This structure is
- *  passed to all HID Class driver functions, so that multiple instances of the same class
- *  within a device can be differentiated from one another.
- */
 USB_ClassInfo_HID_Device_t Generic_HID_Interface = {
     .Config = {
         .InterfaceNumber = 0,
         .ReportINEndpoint = {
-            .Address = (ENDPOINT_DIR_IN | 1),
+            .Address = (ENDPOINT_DIR_IN | 1), // From LUFA example. What is this and how should it be changed to point at my endpoint?
             .Size = 8,
             .Banks = 1,
         },
@@ -34,11 +29,9 @@ USB_ClassInfo_HID_Device_t Generic_HID_Interface = {
 
 int main(void)
 {
-	/* Disable watchdog if enabled by bootloader/fuses */
 	MCUSR &= ~(1 << WDRF);
 	wdt_disable();
 
-	/* Disable clock division */
 	clock_prescale_set(clock_div_1);
 	USB_Init();
 	GlobalInterruptEnable();
@@ -50,17 +43,14 @@ int main(void)
 	}
 }
 
-/** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
 }
 
-/** Event handler for the library USB Disconnection event. */
 void EVENT_USB_Device_Disconnect(void)
 {
 }
 
-/** Event handler for the library USB Configuration Changed event. */
 void EVENT_USB_Device_ConfigurationChanged(void)
 {
 	bool ConfigSuccess = true;
@@ -70,13 +60,11 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 	USB_Device_EnableSOFEvents();
 }
 
-/** Event handler for the library USB Control Request reception event. */
 void EVENT_USB_Device_ControlRequest(void)
 {
 	HID_Device_ProcessControlRequest(&Generic_HID_Interface);
 }
 
-/** Event handler for the USB device Start Of Frame event. */
 void EVENT_USB_Device_StartOfFrame(void)
 {
 	HID_Device_MillisecondElapsed(&Generic_HID_Interface);
