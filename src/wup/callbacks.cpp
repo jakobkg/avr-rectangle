@@ -46,8 +46,8 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			Size    = sizeof(USB_HID_Descriptor_HID_t);
 			break;
 		case HID_DTYPE_Report:
-			Address = &GenericReport;
-			Size    = sizeof(GenericReport);
+			Address = &ReportDescriptor;
+			Size    = ReportDescriptorLength;
 			break;
 	}
 
